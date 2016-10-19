@@ -1,13 +1,14 @@
+"""
+ lcor.py:
+
+ This is the "original" version of lc. Bits and pieces of this program work, 
+ but not all of it at the same time. I'm mainly just keeping it for the plot-related
+ commands that I might need later.
+"""
 import matplotlib.pyplot as plt
 import numpy as np
 from math import floor
 from scipy.optimize import curve_fit
-"""
-Version 5: Update Notes:
-    -Note: The np.clip() function doesn't operate how I thought it did.
-	-Instead of cropping the array/list, it truncates values.
-	-Attempting a list slice in the while-loop. (5:7)
-"""
 datafile = open ('kepler.dat')
 kdata = datafile.readlines()
 datafile.close()
