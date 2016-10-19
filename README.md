@@ -13,3 +13,5 @@ _______________
   the fit parameters in another list. This process is rinsed and repeated until the fit 
   parameters for all of the slices have been stored. The program then averages these 
   fit parameters out, and returns the average location of an eclipse.
+
+  Note: Not all of these features are fully working at the moment.
