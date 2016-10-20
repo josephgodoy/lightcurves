@@ -15,9 +15,8 @@ _______________
      fit parameters out, and returns the average location of an eclipse.
 
   Dependencies:
-     -Python 3.5.2 (Anacconda custom build)
-     -NumPy, SciPy, Matplotlib (Pre-installed with Anaconda)
+  Python 3.5.2 (Anaconda custom build), NumPy, SciPy, Matplotlib (Pre-installed with Anaconda)
      
   
-  Issues:
-     -Function fitting is still on the way. (Plotting and cropping work perfectly, though!)
+  Issues: 
+  Function fitting is still on the way. (Plotting and cropping work perfectly, though!)
