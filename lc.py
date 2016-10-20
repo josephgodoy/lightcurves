@@ -1,20 +1,12 @@
 '''
- lc.py - version 3:
+   lc.py - version 4:
 
- Updates:
-    -Documentation improved.
-    -Fixed a faulty constant.
+   Updates:
+      -New cropping method, tested multiple times, fully functional.
 
-  Next Steps:
-    -Fix cropping.
-    -Loop Gaussian function over each cropped set of timeList[] values.
-
-  Other Notes:
-    -As one might expect, the first and last values on a given OrbitalPeriod
-     are not necessarily sampled in kepler.dat.
-    -Possible solution: 
-      + Check indexed values until one escapes the acceptable range.
-      + Store the index and use it as the first entry in the next loop, rinse, repeat.
+   Next Steps:
+      -Loop Gaussian function over each cropped set of timeList[] values.
+      -Update Gaussian guess parameters.
 '''
 
 import matplotlib.pyplot as plt
@@ -29,53 +21,52 @@ datafile.close()
 timeList = []
 fluxList = []
 
-# Populates lists with their respective data points:
+# Populates lists with file data:
 
 for line in kdata:
     ph = line.split()
     timeList.append(float(ph[0]))
     fluxList.append(float(ph[1]))
-print(len(timeList))
+print("len(timeList) = ", len(timeList))
 
-# Gaussian function:
+# Gaussian function definition:
 
 def gauss (x, a, b, c):
    return a*np.exp(-(x-b)**2/(2*c**2))
 
 # Notable constants, arrays declared here:
-# NOTE: All previous versions of lc are using an incorrect value
-# for FirstTimeValue (timeList[0]).
-# The correct value is, in fact, 169.530573.
 
 OrbitalPeriod = 1.76358757
 FirstTimeValue = 169.530573
 NumOfTimeValues = 1519915
 ReducedTimeValues = 1519914
 poptResults = []
+croppedTimeList = []
+croppedFluxList = []
 NLoops = 0
-n = 0
+i = 0
 
-# Think of this like a 'reverse array' method:
-# Input a desired value, get a list index.
+'''
+# This is working! It starts at [0] and stops when [2548] exceeds the condition.
+# All that's left to do is get rid of the previous interval.
+'''
+while True and i <= ReducedTimeValues:
+   for index in timeList:
+       if timeList[i] > (FirstTimeValue + (NLoops * OrbitalPeriod) + OrbitalPeriod):
+           print("Condition met at entry [%d]." % i)
+           NLoops += 1
+           break
+       else:
+           croppedTimeList.append(timeList[i])
+           croppedFluxList.append(fluxList[i])
+           i += 1
+   croppedTimeArray = np.array(croppedTimeList)
+   croppedFluxArray = np.array(croppedFluxList)
+   plt.plot(croppedTimeList, croppedFluxList, 'o')
+   plt.show()
+   while croppedTimeList:
+      croppedTimeList.pop() 
+   while croppedFluxList:
+      croppedFluxList.pop()
+    
 
-print("Find index for value:")
-wantedValue = input()
-while True:
-    if timeList[n] == wantedValue:
-       print("%d") % n
-       break
-   elif timeList[n] != wantedValue:
-       n += 1
-
-# Potential Solution 1: List comprehension. (?)
-# while (NLoops < (ReducedTimeValues/OrbitalPeriod)):
-#    croppedList = [timeList for x in range (TimeArray[(FirstTimeValue + (N * OrbitalPeriod) < FirstTimeValue + (N+1) * OrbitalPeriod)])]
-
-# Potential Solution 2: List comprehension II. (?)
-# while (NLoops < (ReducedTimeValues/OrbitalPeriod)):
-#    croppedList = [timeList for x in range (TimeArray[(FirstTimeValue + (N * OrbitalPeriod), (FirstTimeValue + (N+1) * OrbitalPeriod))])]
-
-# Potential Solution 3: NumPy array magic. (?)
-# M = FirstTimeValue + OrbitalPeriod
-# croppedList = timeList[ OrbitalPeriod <= timeList ]
-# croppedList = croppedList[ croppedList < M ]
