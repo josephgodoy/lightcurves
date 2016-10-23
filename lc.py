@@ -1,11 +1,10 @@
 '''
-   lc.py - version 4:
+   lc.py - version 5:
 
    Updates:
-      -New cropping method, tested multiple times, fully functional.
-
+      -Cropping method is working, gaussian function call added.
+      -Added comments for clarification.
    Next Steps:
-      -Loop Gaussian function over each cropped set of timeList[] values.
       -Update Gaussian guess parameters.
 '''
 
@@ -43,31 +42,41 @@ ReducedTimeValues = 1519914
 poptResults = []
 croppedTimeList = []
 croppedFluxList = []
+FirstCentroid = 169.947427
 NLoops = 0
 i = 0
 
 '''
-# This is working! It starts at [0] and stops when [2548] exceeds the condition.
-# All that's left to do is get rid of the previous interval.
+This segment loops over all of the items in the list of time values,
+appending each value in timeList[] to a new croppedTimeList[],
+until a value outside of the crop interval of size OrbitalPeriod is reached.
+Then, the values are converted into NumPy arrays, fitted and plotted, and the
+loop starts back over again, repeating the process.
 '''
 
 while True and i <= ReducedTimeValues:
    for index in timeList:
+       #This loop crops an interval of size OrbitalPeriod.
        if timeList[i] > (FirstTimeValue + (NLoops * OrbitalPeriod) + OrbitalPeriod):
            print("Condition met at entry [%d]." % i)
            NLoops += 1
            break
        else:
+           #Iteratively populates cropped lists with time, flux list values.
            croppedTimeList.append(timeList[i])
            croppedFluxList.append(fluxList[i])
            i += 1
    croppedTimeArray = np.array(croppedTimeList)
    croppedFluxArray = np.array(croppedFluxList)
-   plt.plot(croppedTimeList, croppedFluxList, 'o')
+   #fittedData = gauss(croppedTimeArray, 10, (NLoops * FirstCentroid), 5)
+   # p0 = (?, ?, ?)
+   # popt, pcov = curve_fit (gauss, croppedTimeArray, croppedFluxArray, p0)
+   # plt.plot(croppedTimeList, fittedFluxList)
+   plt.plot(croppedTimeArray, croppedFluxArray, 'o')
    plt.show()
+   # This empties out the lists, making room for
+   # the next set of values.
    while croppedTimeList:
-      croppedTimeList.pop() 
+      croppedTimeList.pop()
    while croppedFluxList:
       croppedFluxList.pop()
-    
-
