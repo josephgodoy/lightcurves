@@ -5,7 +5,8 @@
       -Cropping method is working, gaussian function call added.
       -Added comments for clarification.
    Next Steps:
-      -Update Gaussian guess parameters.
+      -Refine Gaussian guess parameters.
+      -Compute running average (averageDelta) instead of using a sample list.
 '''
 
 import matplotlib.pyplot as plt
@@ -39,12 +40,13 @@ OrbitalPeriod = 1.76358757
 FirstTimeValue = 169.530573
 NumOfTimeValues = 1519915
 ReducedTimeValues = 1519914
-poptResults = []
-croppedTimeList = []
-croppedFluxList = []
 FirstCentroid = 169.947427
 NLoops = 0
 i = 0
+averageDelta = 1.763
+poptResults = []
+croppedTimeList = []
+croppedFluxList = []
 
 '''
 This segment loops over all of the items in the list of time values,
@@ -70,6 +72,7 @@ while True and i <= ReducedTimeValues:
    croppedFluxArray = np.array(croppedFluxList)
    #fittedData = gauss(croppedTimeArray, 10, (NLoops * FirstCentroid), 5)
    # p0 = (?, ?, ?)
+   # p0 = (10, (169.948 + (averageDelta * NLoops)), 5)
    # popt, pcov = curve_fit (gauss, croppedTimeArray, croppedFluxArray, p0)
    # plt.plot(croppedTimeList, fittedFluxList)
    plt.plot(croppedTimeArray, croppedFluxArray, 'o')
