@@ -1,12 +1,6 @@
 '''
-   lc.py - version 5:
+This is the newest version of lc.py.
 
-   Updates:
-      -Cropping method is working, gaussian function call added.
-      -Added comments for clarification.
-   Next Steps:
-      -Refine Gaussian guess parameters.
-      -Compute running average (averageDelta) instead of using a sample list.
 '''
 
 import matplotlib.pyplot as plt
@@ -35,51 +29,23 @@ def gauss (x, a, b, c):
    return a*np.exp(-(x-b)**2/(2*c**2))
 
 # Notable constants, arrays declared here:
-
-OrbitalPeriod = 1.76358757
-FirstTimeValue = 169.530573
-NumOfTimeValues = 1519915
-ReducedTimeValues = 1519914
-FirstCentroid = 169.947427
-NLoops = 0
-i = 0
-averageDelta = 1.763
-poptResults = []
-croppedTimeList = []
-croppedFluxList = []
-
-'''
-This segment loops over all of the items in the list of time values,
-appending each value in timeList[] to a new croppedTimeList[],
-until a value outside of the crop interval of size OrbitalPeriod is reached.
-Then, the values are converted into NumPy arrays, fitted and plotted, and the
-loop starts back over again, repeating the process.
-'''
-
-while True and i <= ReducedTimeValues:
-   for index in timeList:
-       #This loop crops an interval of size OrbitalPeriod.
-       if timeList[i] > (FirstTimeValue + (NLoops * OrbitalPeriod) + OrbitalPeriod):
-           print("Condition met at entry [%d]." % i)
-           NLoops += 1
-           break
-       else:
-           #Iteratively populates cropped lists with time, flux list values.
-           croppedTimeList.append(timeList[i])
-           croppedFluxList.append(fluxList[i])
-           i += 1
-   croppedTimeArray = np.array(croppedTimeList)
-   croppedFluxArray = np.array(croppedFluxList)
-   #fittedData = gauss(croppedTimeArray, 10, (NLoops * FirstCentroid), 5)
-   # p0 = (?, ?, ?)
-   # p0 = (10, (169.948 + (averageDelta * NLoops)), 5)
-   # popt, pcov = curve_fit (gauss, croppedTimeArray, croppedFluxArray, p0)
-   # plt.plot(croppedTimeList, fittedFluxList)
-   plt.plot(croppedTimeArray, croppedFluxArray, 'o')
-   plt.show()
-   # This empties out the lists, making room for
-   # the next set of values.
-   while croppedTimeList:
-      croppedTimeList.pop()
-   while croppedFluxList:
-      croppedFluxList.pop()
+P = 1.76358757 #OrbitalPeriod
+FirstTimeValue = timeList[0]
+FirstCentroid = 0.42
+NumberOfPeriods = int(np.ceil(((timeList[-1])-(timeList[0]))/ P))
+timeArray = np.array(timeList)
+timeArray = timeArray - timeArray[0]
+print(timeArray[0])
+fluxArray = np.array(fluxList)
+for i in range(0, NumberOfPeriods):
+    found = np.where((timeArray > i * P) & (timeArray < (i + 1) * P))
+    croppedTimeArray = timeArray[found]
+    croppedFluxArray = fluxArray[found]
+    p0 = [-5, (FirstCentroid + (i * P)), 0.3]
+    plt.plot(croppedTimeArray, croppedFluxArray, 'o')
+    plt.show()
+    popt, pcov = curve_fit (gauss, croppedTimeArray, croppedFluxArray, p0)
+    print("fit = ", popt)
+    print("guess = ", p0)
+    plt.plot(croppedTimeArray, gauss(croppedTimeArray, *popt))
+    plt.show()
