@@ -55,19 +55,21 @@ timeArray = np.array(timeList)
 # Decrements each value in timeArray by the first element's value.
 
 timeArray = timeArray - timeArray[0]
-
 print(timeArray[0])
 fluxArray = np.array(fluxList)
-
+w = 0.3 #width
+eclipseTime = 1.3
 for i in range(0, NPeriods):
     found = np.where((timeArray > i * P) & (timeArray < (i + 1) * P))
+    #found = np.where((timeArray > (i * P + eclipseTime ) - w) & (timeArray < (i * P + eclipseTime ) + w))
     croppedTimeArray = timeArray[found]
     croppedFluxArray = fluxArray[found]
     p0 = [-5, (FirstCentroid + (i * P)), 0.3]
+    print(croppedTimeArray)
     if len(croppedTimeArray) != 0:
+        print("i = %i" % i)
         plt.plot(croppedTimeArray, croppedFluxArray, 'o')
-        plt.show()
-        popt, pcov = curve_fit (gauss, croppedTimeArray, croppedFluxArray, p0)
+        popt, pcov = curve_fit (gauss, croppedTimeArray, croppedFluxArray, p0, maxfev = 100000)
         fitParameters.append(popt[z])
         fitParameters.append(popt[z+1])
         fitParameters.append(popt[z+2])
