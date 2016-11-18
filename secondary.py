@@ -1,10 +1,12 @@
 '''
+==================== SECONDARY.PY ==========================
 Update: Solved the empty list problem by testing
 whether or not the length of croppedTimeArray is nonzero.
 If it is nonzero, the function fitting loop runs, if not,
 the dataset is skipped.
 Update #2: The fit parameters are now stored in an array,
 fitParameters. It contains the results of each loop's popt.
+============================================================
 '''
 
 import matplotlib.pyplot as plt
@@ -13,6 +15,7 @@ from math import floor
 from scipy.optimize import curve_fit
 
 datafile = open ('kepler.dat')
+output = open('out.tsv', 'w')
 kdata = datafile.readlines()
 datafile.close()
 
@@ -29,14 +32,18 @@ print("len(timeList) = ", len(timeList))
 
 # Gaussian function definition:
 
-def gauss (x, a, b, c):
-   return a*np.exp(-(x-b)**2/(2*c**2))
+#def gauss (x, a, b, c):
+#  return a*np.exp(-(x-b)**2/(2*c**2))
+
+def gauss (x, b): 
+  return -0.11*np.exp(-(x-b)**2/(2*0.04**2))
 
 # Notable constants, arrays declared here:
 
 P = 1.76358757 #OrbitalPeriod
 FirstTimeValue = timeList[0]
 FirstCentroid = 0.42
+FirstSecondary = 1.3
 fitParameters = []
 z = 0
 
@@ -57,25 +64,28 @@ timeArray = np.array(timeList)
 timeArray = timeArray - timeArray[0]
 print(timeArray[0])
 fluxArray = np.array(fluxList)
-w = 0.3 #width
+w = 0.3 #width of cropping region DO NOT USE IN GAUSSIAN
+d = -0.11 #depth
 eclipseTime = 1.3
 for i in range(0, NPeriods):
     #found = np.where((timeArray > i * P) & (timeArray < (i + 1) * P))
     found = np.where((timeArray > (i * P + eclipseTime ) - w) & (timeArray < (i * P + eclipseTime ) + w))
     croppedTimeArray = timeArray[found]
     croppedFluxArray = fluxArray[found]
-    p0 = [-5, (FirstCentroid + (i * P)), 0.3]
+    #p0 = [d, (FirstCentroid + (i * P)), w] #Depth, Centroid, Width?
+    p0 = [(FirstSecondary + (i * P))] #Depth, Centroid, Width
     print(croppedTimeArray)
     if len(croppedTimeArray) != 0:
         print("i = %i" % i)
         plt.plot(croppedTimeArray, croppedFluxArray, 'o')
         popt, pcov = curve_fit (gauss, croppedTimeArray, croppedFluxArray, p0, maxfev = 100000)
         fitParameters.append(popt[z])
-        fitParameters.append(popt[z+1])
-        fitParameters.append(popt[z+2])
+        #fitParameters.append(popt[z+1])
+        #fitParameters.append(popt[z+2])
         z = 0
-        print("fit = ", popt)
+        print("centroid = ", popt[0], "+/- ", np.sqrt(pcov[0,0]))
         print("guess = ", p0)
+        print(NPeriods)
         plt.plot(croppedTimeArray, gauss(croppedTimeArray, *popt))
         plt.show()
         print(fitParameters)

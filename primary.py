@@ -1,10 +1,12 @@
 '''
+================= PRIMARY.PY ===============================
 Update: Solved the empty list problem by testing
 whether or not the length of croppedTimeArray is nonzero.
 If it is nonzero, the function fitting loop runs, if not,
 the dataset is skipped.
 Update #2: The fit parameters are now stored in an array,
 fitParameters. It contains the results of each loop's popt.
+============================================================
 '''
 
 import matplotlib.pyplot as plt
@@ -74,7 +76,7 @@ for i in range(0, NPeriods):
         fitParameters.append(popt[z+1])
         fitParameters.append(popt[z+2])
         z = 0
-        print("fit = ", popt)
+        print("centroid = ", popt[1], "+/- ", np.sqrt(pcov[1,1]))
         print("guess = ", p0)
         plt.plot(croppedTimeArray, gauss(croppedTimeArray, *popt))
         plt.show()
