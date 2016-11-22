@@ -20,13 +20,13 @@ dt = [] # Final delta-t.
 du = [] # Final uncertainty.
 
 for line in primaryData:
-    pd = lines.split()
+    pd = line.split()
     i1.append(int(pd[0]))
     t1.append(float(pd[1]))
     u1.append(float(pd[2]))
 
 for line in secondaryData:
-    sd = lines.split()
+    sd = line.split()
     i2.append(int(sd[0]))
     t2.append(float(sd[1]))
     u2.append(float(sd[2]))
