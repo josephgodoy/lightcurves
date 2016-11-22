@@ -4,7 +4,7 @@ import numpy as np
 
 primaryFile = open ('LCP-output.txt')
 secondaryFile = open ('LCS-output.txt')
-final = open ('finaloutput.txt')
+final = open ('finaloutput.txt', 'w')
 primaryData = primaryFile.readlines()
 secondaryData = secondaryFile.readlines()
 
