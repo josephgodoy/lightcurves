@@ -9,6 +9,7 @@ primaryData = primaryFile.readlines()
 secondaryData = secondaryFile.readlines()
 
 indexA = 0
+indexB = 0
 
 i1 = [] # Indices for primary.py.
 i2 = [] # Indices for secondary.py.
@@ -32,11 +33,22 @@ for line in secondaryData:
     u2.append(float(sd[2]))
 
 while (indexA < 806):
-
    if u1[indexA] > 0 and u2[indexA] > 0:
+      #print(indexA) 
+      dt.append(t2[indexA] - t1[indexA])
+      du.append(np.sqrt(u1[indexA] ** 2 + u2[indexA] ** 2))
 
-      dt[indexA] = t2[indexA] - t1[indexA]
-      du[indexA] = np.sqrt(u1[indexA] ** 2 + u2[indexA] ** 2)
-      final.write(indexA, dt[indexA], du[indexA])
+      final.write("%i %f %f \n" % (indexB, dt[indexB], du[indexB]))
+      indexB += 1
 
    indexA += 1
+
+avgDeltaT = sum(dt) / len(dt)
+avgUncertainty = sum(du) / len(du)
+
+
+final.write ("%f | %f"  % (avgDeltaT, avgUncertainty))
+print ("-------------------")
+print("%f | %f"  % (avgDeltaT, avgUncertainty))
+print ("-------------------")
+
