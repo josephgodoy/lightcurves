@@ -13,23 +13,33 @@ import numpy as np
 from math import floor
 from scipy.optimize import curve_fit
 
-#I/O preparation:
+#I/O preparation + error handling:
 
-datafile = open ('kepler.dat')
-output = open('LCP-output.txt', 'w')
-kdata = datafile.readlines()
+halt = False
+while not halt:
+   try:
+
+      filename = input('Dataset:\n>')
+      datafile = open(filename)
+      halt = True
+
+   except FileNotFoundError as err:
+      print(err, "\n Let's try this again.")
+
+output = open ('LCP-output.txt', 'w')
+kdata  = datafile.readlines()
 datafile.close()
 timeList = []
 fluxList = []
 
-# Populates lists:
+# Populates list with respective data:
 
 for line in kdata:
     ph = line.split()
     timeList.append(float(ph[0]))
     fluxList.append(float(ph[1]))
 
-# Gaussian function definition:
+# Gaussian function defined here:
 
 def gauss (x, a, b, c):
    return a*np.exp(-(x-b)**2/(2*c**2))
