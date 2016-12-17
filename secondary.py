@@ -13,11 +13,22 @@ import numpy as np
 from math import floor
 from scipy.optimize import curve_fit
 
-# I/O preparation:
+# I/O preparation + error handling:
 
-datafile = open ('kepler.dat')
-output = open('LCS-output.txt', 'w')
-kdata = datafile.readlines()
+halt = False
+while not halt:
+   try:
+
+      filename = input('Dataset:\n>')
+      datafile = open(filename)
+      halt = True
+
+   except FileNotFoundError as error:
+
+      print(error, "\n Let's try this again.")
+
+output = open ('LCS-output.txt', 'w')
+kdata  = datafile.readlines()
 datafile.close()
 timeList = []
 fluxList = []
