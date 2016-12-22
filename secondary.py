@@ -19,7 +19,8 @@ halt = False
 while not halt:
    try:
 
-      filename = input('Dataset:\n>')
+      #filename = input('Dataset:\n>')
+      filename = 'kepler.dat'
       datafile = open(filename)
       halt = True
 
